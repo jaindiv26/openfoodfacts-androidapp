@@ -14,6 +14,10 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.firebase.jobdispatcher.JobParameters;
+
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -734,6 +738,43 @@ public class OpenFoodAPIClient {
 
     public void getProductsByStore(final String store, final int page, final OnStoreCallback onStoreCallback) {
         apiService.getProductByStores(store, page).enqueue(new Callback<Search>() {
+            @Override
+            public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
+                if (response.isSuccessful()) {
+                    onStoreCallback.onStoreResponse(true, response.body());
+                } else {
+                    onStoreCallback.onStoreResponse(false, null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Search> call, @NonNull Throwable t) {
+                onStoreCallback.onStoreResponse(false, null);
+            }
+        });
+
+    }
+
+    public void getProductsByOrigin(final String origin, final int page, final OnStoreCallback onStoreCallback) {
+        apiService.getProductsByOrigin(origin, page).enqueue(new Callback<Search>() {
+            @Override
+            public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
+                if (response.isSuccessful()) {
+                    onStoreCallback.onStoreResponse(true, response.body());
+                } else {
+                    onStoreCallback.onStoreResponse(false, null);
+                }
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<Search> call, @NonNull Throwable t) {
+                onStoreCallback.onStoreResponse(false, null);
+            }
+        });
+
+    }
+    public void getProductsByManufacturingPlace(final String manufacturingPlace, final int page, final OnStoreCallback onStoreCallback) {
+        apiService.getProductsByManufacturingPlace(manufacturingPlace, page).enqueue(new Callback<Search>() {
             @Override
             public void onResponse(@NonNull Call<Search> call, @NonNull Response<Search> response) {
                 if (response.isSuccessful()) {
